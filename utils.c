@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/22 14:15:30 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/22 14:18:37 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 20:48:09 by coder            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 long	get_interval_time(struct timeval end, struct timeval begin)
 {
-	return ((end.tv_sec * 1000000 + end.tv_usec) / 1000) -
-		((begin.tv_sec * 1000000 + begin.tv_usec) / 1000);
+	return (((end.tv_sec * 1000000 + end.tv_usec) / 1000)
+		- ((begin.tv_sec * 1000000 + begin.tv_usec) / 1000));
 }
 
 void	print_message(char *message, t_thread_data data)

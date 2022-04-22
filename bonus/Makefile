@@ -1,7 +1,7 @@
 SRCS	= philo.c thread_data.c atoi.c
 OBJS	= ${SRCS:.c=.o}
 
-CC	= cc
+CC	= cc -g3
 
 CFLAGS = -Wall -Werror -Wextra
 

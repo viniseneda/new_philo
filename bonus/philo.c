@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 13:10:36 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/22 15:04:17 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 23:22:04 by coder            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,9 @@ void	child_process(t_thread_data data)
 		check_death(data);
 		data.number_of_meals--;
 	}
+	sem_close(data.print);
+	sem_close(data.forks);
+	sem_close(data.kill);
 	exit(0);
 }
 
@@ -112,6 +115,7 @@ void	create_child_processes(t_thread_data data, int n)
 		sem_wait(data.kill);
 		kill(pid, SIGKILL);
 		sem_post(data.kill);
+		sem_close(data.kill);
 		exit(0);
 	}
 }
@@ -150,6 +154,8 @@ void	run_processes(t_thread_data data)
 		n++;
 	}
 	sem_post(data.kill);
+	sem_close(data.kill);
+	printf("SINGLE\n");
 	unlink_semaphore();
 	exit(0);
 }
