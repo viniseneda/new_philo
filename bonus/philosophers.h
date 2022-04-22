@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
+/*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:44:16 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/22 14:35:19 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 23:41:03 by coder            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_thread_data
 void			print_thread_data(t_thread_data data);
 t_thread_data	init_thread_data(int argc, char **argv);
 int				try_to_eat(t_thread_data *data);
-void			print_message(char *message, t_thread_data data);
+// void			print_message(char *message, t_thread_data data);
 int				has_died(t_thread_data *data);
 void			die(t_thread_data *data);
 int				ft_atoi(const char *nptr);
