@@ -6,7 +6,7 @@
 /*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 13:10:36 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/22 14:46:58 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 15:04:17 by vvarussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,31 +95,53 @@ void	unlink_semaphore()
 	sem_unlink("kill");
 }
 
+void	create_child_processes(t_thread_data data, int n)
+{
+	int	pid;
+	int	pid2;
+	
+	pid = fork();
+	if (pid == 0)
+	{
+		data.name_of_thread = n;
+		child_process(data);
+	}
+	pid2 = fork();
+	if (pid2 == 0)
+	{
+		sem_wait(data.kill);
+		kill(pid, SIGKILL);
+		sem_post(data.kill);
+		exit(0);
+	}
+}
+
 void	run_processes(t_thread_data data)
 {
 	int	n;
-	int	pid;
-	int	pid2;
+	// int	pid;
+	// int	pid2;
 
 	n = data.number_philo;
 	unlink_semaphore();
 	data.kill = sem_open("kill", O_CREAT, 0600, 0);
 	while (n > 0)
 	{
-		pid = fork();
-		if (pid == 0)
-		{
-			data.name_of_thread = n;
-			child_process(data);
-		}
-		pid2 = fork();
-		if (pid2 == 0)
-		{
-			sem_wait(data.kill);
-			kill(pid, SIGKILL);
-			sem_post(data.kill);
-			exit(0);
-		}
+		// pid = fork();
+		// if (pid == 0)
+		// {
+		// 	data.name_of_thread = n;
+		// 	child_process(data);
+		// }
+		// pid2 = fork();
+		// if (pid2 == 0)
+		// {
+		// 	sem_wait(data.kill);
+		// 	kill(pid, SIGKILL);
+		// 	sem_post(data.kill);
+		// 	exit(0);
+		// }
+		create_child_processes(data, n);
 		n--;
 	}
 	while (n < data.number_philo)

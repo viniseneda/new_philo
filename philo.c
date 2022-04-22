@@ -6,7 +6,7 @@
 /*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 13:10:36 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/22 14:23:22 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 15:15:57 by vvarussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,10 +66,14 @@ void	run(pthread_t *philosophers, t_thread_data *data)
 
 void	run_threads(t_thread_data data)
 {
-	pthread_mutex_t	mutexes[data.number_philo + 2];
-	pthread_t		philosophers[data.number_philo];
+	pthread_t		*philosophers;
+	pthread_mutex_t	*mutexes;
+	// pthread_t		philosophers[data.number_philo];
+	// pthread_mutex_t	mutexes[data.number_philo + 2];
 	int				n;
 
+	philosophers = (pthread_t *) malloc(sizeof(pthread_t) * data.number_philo);
+	mutexes = (pthread_mutex_t *) malloc(sizeof(pthread_mutex_t) * (data.number_philo + 2));
 	init_mutexes(&data, mutexes);
 	run(philosophers, &data);
 	n = data.number_philo;
@@ -79,6 +83,7 @@ void	run_threads(t_thread_data data)
 		if (pthread_join(philosophers[n], NULL) != 0)
 			perror("failed to create thread");
 	}
+	free(philosophers);
 }
 
 int	main(int argc, char **argv)
@@ -88,4 +93,5 @@ int	main(int argc, char **argv)
 	data = init_thread_data(argc, argv);
 	run_threads(data);
 	free(data.forks);
+	free(data.forks_mutexes);
 }
