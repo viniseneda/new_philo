@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   try_to_eat.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vvarussa <vvarussa@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/04/15 11:44:56 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/15 20:19:41 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 14:26:53 by vvarussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	set_fork(t_thread_data *data, int fork_index, int value)
 	pthread_mutex_unlock(&data->forks_mutexes[fork_index]);
 }
 
-int		has_died(t_thread_data *data)
+int	has_died(t_thread_data *data)
 {
 	int	value;
 
@@ -37,7 +37,7 @@ void	die(t_thread_data *data)
 	pthread_mutex_unlock(&data->forks_mutexes[data->number_philo + 1]);
 }
 
-int		eat(t_thread_data *data)
+int	eat(t_thread_data *data)
 {
 	print_message("has taken a fork", *data);
 	print_message("has taken a fork", *data);

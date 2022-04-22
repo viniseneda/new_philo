@@ -1,4 +1,4 @@
-SRCS	= philo.c thread_data.c try_to_eat.c atoi.c
+SRCS	= philo.c thread_data.c try_to_eat.c atoi.c utils.c
 OBJS	= ${SRCS:.c=.o}
 
 CC	= cc

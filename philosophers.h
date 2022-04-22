@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vvarussa <vvarussa@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 10:44:16 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/20 23:30:09 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 14:18:54 by vvarussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,5 +46,9 @@ void			print_message(char *message, t_thread_data data);
 int				has_died(t_thread_data *data);
 void			die(t_thread_data *data);
 int				ft_atoi(const char *nptr);
+
+long	get_interval_time(struct timeval end, struct timeval begin);
+void	print_message(char *message, t_thread_data data);
+void	define_fork_indexes(t_thread_data *data);
 
 #endif

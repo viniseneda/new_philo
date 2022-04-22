@@ -3,24 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: vvarussa <vvarussa@student.42sp.org.br>    +#+  +:+       +#+        */
+/*   By: vvarussa <vvarussa@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 13:10:36 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/20 23:52:34 by vvarussa         ###   ########.fr       */
+/*   Updated: 2022/04/22 14:46:58 by vvarussa         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-long    get_interval_time(struct timeval end, struct timeval begin)
+long	get_interval_time(struct timeval end, struct timeval begin)
 {
-	return ((end.tv_sec * 1000000 + end.tv_usec) / 1000) -
-		((begin.tv_sec * 1000000 + begin.tv_usec) / 1000);
+	return (((end.tv_sec * 1000000 + end.tv_usec) / 1000)
+		-((begin.tv_sec * 1000000 + begin.tv_usec) / 1000));
 }
 
 void	print_message(char *message, t_thread_data data)
 {
-	long timestamp;
+	long	timestamp;
 
 	sem_wait(data.print);
 	gettimeofday(&data.end, NULL);
@@ -29,9 +29,9 @@ void	print_message(char *message, t_thread_data data)
 	sem_post(data.print);
 }
 
-int     has_died(t_thread_data *data)
+int	has_died(t_thread_data *data)
 {
-	long timestamp;
+	long	timestamp;
 
 	gettimeofday(&data->end, NULL);
 	timestamp = get_interval_time(data->end, data->thinking_time);
@@ -46,7 +46,6 @@ void	check_death(t_thread_data data)
 	{
 		print_message("died", data);
 		sem_wait(data.print);
-		// printf("%ld\n", get_interval_time(data.end, data.thinking_time));
 		sem_post(data.kill);
 	}
 }
@@ -54,7 +53,7 @@ void	check_death(t_thread_data data)
 void	one_philosopher(t_thread_data data)
 {
 	print_message("is waiting", data);
-	while(1)
+	while (1)
 	{
 		check_death(data);
 		usleep(100);
@@ -67,10 +66,9 @@ void	child_process(t_thread_data data)
 	data.forks = sem_open("fork", O_CREAT, 0600, data.number_philo / 2);
 	gettimeofday(&data.begin, NULL);
 	gettimeofday(&data.thinking_time, NULL);
-	// printf("%d\n", data.number_philo / 2);
 	if (data.number_philo == 1)
 		one_philosopher(data);
-	while(data.number_of_meals != 0)
+	while (data.number_of_meals != 0)
 	{
 		print_message("is waiting", data);
 		if (data.number_philo % 2)
@@ -90,16 +88,21 @@ void	child_process(t_thread_data data)
 	exit(0);
 }
 
-void    run_processes(t_thread_data data)
+void	unlink_semaphore()
 {
-	int n;
-	int pid;
-	int pid2;
-
-	n = data.number_philo;
 	sem_unlink("print");
 	sem_unlink("fork");
 	sem_unlink("kill");
+}
+
+void	run_processes(t_thread_data data)
+{
+	int	n;
+	int	pid;
+	int	pid2;
+
+	n = data.number_philo;
+	unlink_semaphore();
 	data.kill = sem_open("kill", O_CREAT, 0600, 0);
 	while (n > 0)
 	{
@@ -119,21 +122,19 @@ void    run_processes(t_thread_data data)
 		}
 		n--;
 	}
-	while(n < data.number_philo)
+	while (n < data.number_philo)
 	{
 		wait(NULL);
 		n++;
 	}
 	sem_post(data.kill);
-	sem_unlink("print");
-	sem_unlink("fork");
-	sem_unlink("kill");
+	unlink_semaphore();
 	exit(0);
 }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	t_thread_data data;
+	t_thread_data	data;
 
 	setbuf(stdout, NULL);
 	data = init_thread_data(argc, argv);
