@@ -6,7 +6,7 @@
 /*   By: coder <coder@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/23 13:10:36 by vvarussa          #+#    #+#             */
-/*   Updated: 2022/04/23 04:26:41 by coder            ###   ########.fr       */
+/*   Updated: 2022/04/23 04:53:37 by coder            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,25 +60,6 @@ void	check_death(t_thread_data data)
 	}
 }
 
-void	check_wait_death(t_thread_data data)
-{
-	long	timestamp;
-	long	death_time;
-	
-	if (has_died(&data))
-	{
-		sem_wait(data.print);
-		gettimeofday(&data.end, NULL);
-		timestamp = get_interval_time(data.end, data.begin);
-		death_time = get_time_til_death(&data);
-		timestamp += death_time;
-		printf("%-5ld %d %s\n", timestamp, data.name_of_thread, "died");
-		
-		sem_post(data.kill);
-	}
-}
-
-
 void	one_philosopher(t_thread_data data)
 {
 	print_message("is waiting", data, 1);
@@ -89,42 +70,38 @@ void	one_philosopher(t_thread_data data)
 	}
 }
 
-
-void	eat_or_sleep2(t_thread_data *data, long time_to_eat_or_sleep)
-{
-	long	time;
-	
-	check_death(*data);
-	time = get_time_til_death(data) * 1000;
-	// printf("(%ld, %ld)\n", time, time_to_eat_or_sleep);
-	if (time < time_to_eat_or_sleep)
-	{
-		usleep(time + 1000);
-		check_death(*data);
-	}
-	usleep(time_to_eat_or_sleep);
-}
-
 void	eat(t_thread_data *data)
 {
-	
 	print_message("is waiting", *data, 1);
 	if (data->number_philo % 2)
 		usleep(100);
 	sem_wait(data->forks);
-	check_wait_death(*data);
-	// check_death(*data);
+	gettimeofday(&data->thinking_time, NULL);
 	print_message("has taken a fork", *data, 2);
 	print_message("is eating", *data, 1);
-	gettimeofday(&data->thinking_time, NULL);
-	eat_or_sleep2(data, data->time_to_eat);
+	usleep(data->time_to_eat);
 	sem_post(data->forks);
 	print_message("is sleeping", *data, 1);
-	eat_or_sleep2(data, data->time_to_sleep);
+	usleep(data->time_to_sleep);
+}
+
+void	*kill_watch(void *data)
+{
+	t_thread_data *d;
+
+	d = (t_thread_data *) data;
+	while (1)
+	{
+		check_death(*d);
+		usleep(1000);
+	}
+
+	return (NULL);
 }
 
 void	child_process(t_thread_data data)
 {
+	pthread_t	kill_thread;
 	
 	data.print = sem_open("print", O_CREAT, 0600, 1);
 	data.forks = sem_open("fork", O_CREAT, 0600, data.number_philo / 2);
@@ -132,6 +109,8 @@ void	child_process(t_thread_data data)
 	gettimeofday(&data.thinking_time, NULL);
 	if (data.number_philo == 1)
 		one_philosopher(data);
+	if (pthread_create(&kill_thread, NULL, &kill_watch, &data) != 0)
+		perror("failed to create thread");
 	while (data.number_of_meals != 0)
 	{
 		eat(&data);
